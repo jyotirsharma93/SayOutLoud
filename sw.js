@@ -1,37 +1,28 @@
-/* Where it went: lets the app open offline. It only ever fetches this app's own files; your entries never pass through here. */
-const V = "where-it-went-v12";
-const FILES = [
-  "./",
-  "./index.html",
-  "./manifest.webmanifest",
-  "./icon-192.png",
-  "./icon-512.png",
-  "./icon-maskable-512.png",
-  "./apple-touch-icon.png"
-];
+// Bump CACHE when you change index.html so phones pick up the new version.
+const CACHE = 'say-it-v6';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
-self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(V).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
-
-self.addEventListener("activate", (e) => {
+self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== V).map((k) => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
-
-self.addEventListener("fetch", (e) => {
-  const req = e.request;
-  if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) return;
+self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
   e.respondWith(
-    fetch(req)
-      .then((res) => {
+    caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
+      const url = new URL(e.request.url);
+      const cacheable = url.origin === location.origin || /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
+      if (cacheable && (res.ok || res.type === 'opaque')) {
         const copy = res.clone();
-        caches.open(V).then((c) => c.put(req, copy));
-        return res;
-      })
-      .catch(() => caches.match(req).then((m) => m || caches.match("./index.html")))
+        caches.open(CACHE).then(c => c.put(e.request, copy));
+      }
+      return res;
+    }).catch(() => caches.match('./index.html')))
   );
 });
