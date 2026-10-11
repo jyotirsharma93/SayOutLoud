@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Say it out loud</title>
+<meta name="theme-color" content="#F6F5FA">
+<meta name="description" content="Practice speaking out loud, hear yourself back, and build confidence.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Say it">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F5FA; --card:#FFFFFF; --ink:#17152B; --muted:#6A6880; --line:#E6E4EE; --soft:#EFEEF5;
+  --brand:#5440D8; --brand-deep:#2E2470; --brand-soft:#ECE9FC; --brand-mid:#CFC9F2;
+  --apricot:#F2A65A; --good:#1E9E6A; --okay:#C7861A; --work:#E07B39;
+  --display:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --dusk:linear-gradient(150deg,#2E2470 0%,#5440D8 55%,#B4549B 100%);
+  --shadow:0 1px 2px rgba(23,21,43,.04),0 6px 20px rgba(23,21,43,.05);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;font-weight:500;
+  -webkit-font-smoothing:antialiased;padding-top:env(safe-area-inset-top);min-height:100vh}
+body.has-tabs main{padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+body.live{background:var(--dusk);background-attachment:fixed}
+main{max-width:540px;margin:0 auto;padding:12px 20px 32px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.2;font-weight:700;letter-spacing:-.02em}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+[hidden]{display:none !important}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.sec-title{font-size:17px;margin:28px 2px 10px}
+.card{background:var(--card);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+
+/* buttons */
+.btn-go{width:100%;border:0;border-radius:16px;background:var(--brand);color:#fff;font-weight:700;font-size:17px;padding:17px 20px;letter-spacing:-.01em;
+  box-shadow:0 8px 22px rgba(84,64,216,.28);display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .1s}
+.btn-go:active{transform:scale(.98)}
+.btn-text{background:none;border:0;color:var(--brand);font-weight:600;font-size:15px;padding:10px}
+.btn-soft{background:var(--brand-soft);color:var(--brand);border:0;border-radius:999px;padding:9px 16px;font-weight:600;font-size:14px}
+
+/* home header */
+.hello{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:8px 0 18px}
+.hello h1{font-size:26px}
+.hello p{margin:4px 0 0;color:var(--muted);font-size:15px}
+.flame{display:flex;align-items:center;gap:5px;background:var(--card);border-radius:999px;padding:7px 13px 7px 10px;box-shadow:var(--shadow);flex:none}
+.flame b{font-size:17px;font-weight:700}
+.flame.off b{color:var(--muted)}
+
+/* week */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+.week span{font-size:12px;color:var(--muted);font-weight:600}
+.day{width:32px;height:32px;margin:6px auto 0;border-radius:50%;display:grid;place-items:center;background:var(--soft)}
+.day.done{background:var(--brand)}
+.day.today{background:#fff;box-shadow:inset 0 0 0 2px var(--brand)}
+.day.today.done{box-shadow:none;background:var(--brand)}
+.week-msg{margin:14px 0 0;font-size:14px;color:var(--muted)}
+.week-msg b{color:var(--ink);font-weight:700}
+
+/* hero */
+.hero{background:var(--dusk);color:#fff;border-radius:22px;padding:20px 20px 18px;margin-top:16px;position:relative;overflow:hidden;box-shadow:0 14px 34px rgba(46,36,112,.28)}
+.hero::after{content:"";position:absolute;right:-70px;top:-70px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.14),rgba(255,255,255,0) 70%)}
+.hero-top{display:flex;align-items:center;gap:10px;margin-bottom:14px;position:relative;z-index:1}
+.hero-label{font-size:13px;font-weight:600;opacity:.85}
+.prompt{font-weight:700;font-size:25px;line-height:1.25;letter-spacing:-.02em;margin:0 0 18px;min-height:94px;position:relative;z-index:1}
+.shuffle{background:rgba(255,255,255,.16);color:#fff;border:0;border-radius:999px;padding:9px 15px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:7px;position:relative;z-index:1}
+
+/* length + topics */
+.lengths{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:#ECEBF3;border-radius:14px;padding:4px;margin-bottom:16px}
+.lengths button{background:transparent;border:0;border-radius:11px;padding:10px 0;font-weight:600;font-size:14px;color:var(--muted)}
+.lengths button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(23,21,43,.12)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px 8px 12px;font-weight:600;font-size:14px}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.switch-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:2px 0;font-weight:600}
+.switch-row + .switch-row{border-top:1px solid var(--line);margin-top:12px;padding-top:14px}
+.switch-row small{display:block;font-size:13px;color:var(--muted);font-weight:500;margin-top:2px}
+.switch{appearance:none;-webkit-appearance:none;flex:none;width:50px;height:30px;border-radius:999px;background:#DAD8E6;position:relative;margin:0;transition:background .2s}
+.switch::before{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(23,21,43,.2);transition:transform .2s}
+.switch:checked{background:var(--brand)}
+.switch:checked::before{transform:translateX(20px)}
+.error{background:#FCEADF;color:#9A3A07;border-radius:14px;padding:12px 14px;font-size:14px;margin-top:14px}
+
+/* tabs */
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));z-index:10;background:rgba(255,255,255,.92);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-radius:22px;display:flex;gap:4px;padding:6px;box-shadow:0 10px 30px rgba(23,21,43,.14)}
+.tabs button{border:0;background:transparent;border-radius:17px;padding:10px 18px;display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:var(--muted)}
+.tabs button[aria-current="page"]{background:var(--ink);color:#fff}
+
+/* live */
+#live{text-align:center;color:#fff;padding-top:28px}
+.ring{position:relative;width:240px;height:240px;margin:0 auto 26px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:6}
+.ring .track{stroke:rgba(255,255,255,.18)}
+.ring .bar{stroke:#fff;stroke-linecap:round;transition:stroke-dashoffset .12s linear}
+.ring .time{position:absolute;inset:0;display:grid;place-items:center;font-size:56px;font-weight:700;z-index:1}
+.pulse{position:absolute;inset:34px;border-radius:50%;background:rgba(255,255,255,.08);animation:pulse 2.8s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.05);opacity:.5}}
+.live-prompt{font-size:21px;font-weight:700;line-height:1.3;letter-spacing:-.02em;margin:0 8px 8px}
+.hint{font-size:15px;opacity:.75;margin:0 8px 18px}
+.live-fillers{display:inline-block;background:rgba(255,255,255,.14);border-radius:999px;padding:6px 14px;font-weight:600;font-size:14px;margin:0 0 16px}
+.transcript{text-align:left;background:rgba(255,255,255,.1);border-radius:16px;padding:12px 14px;font-size:14px;max-height:120px;overflow:auto;margin:0 0 24px}
+.stop{width:76px;height:76px;border-radius:50%;border:3px solid rgba(255,255,255,.5);background:transparent;display:grid;place-items:center;margin:0 auto 8px}
+.stop:active{transform:scale(.96)}
+.stop span{width:28px;height:28px;border-radius:7px;background:#fff}
+.stop-label{font-weight:600;font-size:14px;opacity:.85}
+
+/* review */
+.cheer{background:var(--dusk);color:#fff;border-radius:22px;padding:24px 20px 18px;text-align:center;box-shadow:0 14px 34px rgba(46,36,112,.28)}
+.cheer h2{font-size:25px;margin:12px 0 4px}
+.cheer .sub{margin:0 0 14px;opacity:.82;font-size:15px}
+#doneArc{transition:stroke-dashoffset 1s cubic-bezier(.3,.7,.3,1)}
+#doneCheck{transition:stroke-dashoffset .4s ease-out .85s}
+.awards{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:16px}
+.award{background:rgba(255,255,255,.14);border-radius:999px;padding:6px 13px;font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.player{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.12);border-radius:16px;padding:8px 14px 8px 8px}
+.play{width:42px;height:42px;border-radius:50%;border:0;background:#fff;display:grid;place-items:center;flex:none}
+.ptrack{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.25);position:relative;cursor:pointer}
+.ptrack div{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:2px;background:#fff}
+.ptime{font-size:14px;min-width:38px;text-align:right}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{background:#fff;border-radius:18px;padding:15px 16px;box-shadow:var(--shadow)}
+.t-label{font-size:13px;color:var(--muted);font-weight:600}
+.t-val{display:block;font-size:32px;font-weight:700;line-height:1.15;margin-top:4px}
+.t-unit{font-size:12px;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;font-weight:600}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.good{color:var(--good)}
+.pill.okay{color:var(--okay)}
+.pill.work{color:var(--work)}
+.pill.none{color:var(--muted)}
+.list{list-style:none;margin:0;padding:4px 18px;background:#fff;border-radius:18px;box-shadow:var(--shadow)}
+.list li{display:flex;gap:12px;align-items:flex-start;padding:13px 0;font-size:15px;line-height:1.45}
+.list li + li{border-top:1px solid var(--line)}
+.ic{width:22px;height:22px;flex:none;margin-top:1px}
+.focus{background:var(--ink);color:#fff;border-radius:18px;padding:18px;display:flex;gap:14px;align-items:flex-start}
+.focus h3{font-size:16px;margin-bottom:4px}
+.focus p{margin:0;font-size:15px;opacity:.88}
+.timeline{display:flex;gap:2px;height:28px;margin:2px 0 10px}
+.timeline div{flex:1;border-radius:3px;background:var(--soft)}
+.timeline .k1{background:var(--brand)}
+.timeline .k2{background:var(--brand-mid)}
+.timeline .k3{background:var(--apricot)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:10px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:0}
+.small{font-size:14px;color:var(--muted);margin:6px 0 0;line-height:1.5}
+.note{background:#FBF1DE;color:#6E4900;border-radius:14px;padding:12px 14px;font-size:14px;margin:12px 0 0}
+.banner{display:flex;gap:12px;align-items:center;font-weight:600}
+.rate{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.rate button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 0 8px;font-size:11px;font-weight:600;color:var(--muted)}
+.rate button b{display:block;font-size:20px;font-weight:700;color:var(--ink);line-height:1.3}
+.rate button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:rgba(255,255,255,.75)}
+.rate button[aria-pressed="true"] b{color:#fff}
+
+/* progress */
+.page-title{font-size:28px;margin:8px 0 18px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#fff;border-radius:18px;padding:14px 12px;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:28px;font-weight:700;line-height:1.15}
+.stat span{font-size:12px;font-weight:600;color:var(--muted)}
+.stat i{display:block;width:22px;height:4px;border-radius:2px;margin-bottom:10px}
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 8px}
+.badge{text-align:center;font-size:11px;font-weight:600;line-height:1.3}
+.badge svg{width:52px;height:52px;display:block;margin:0 auto 7px}
+.badge.locked{color:var(--muted)}
+.bars{display:flex;align-items:flex-end;gap:7px;height:96px;margin:4px 0 10px}
+.bars div{flex:1;border-radius:6px 6px 2px 2px;min-height:5px;background:var(--brand)}
+.bars div.empty{background:var(--soft)}
+.recent li{align-items:center}
+.recent .r-text{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recent .r-meta{font-size:13px;color:var(--muted);white-space:nowrap}
+.empty-msg{color:var(--muted);font-size:14px;margin:0}
+.tiny{font-size:12px;color:var(--muted);margin:16px 4px 0}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}.ring .bar,.switch,.switch::before,.btn-go,#doneArc,#doneCheck{transition:none}}
+</style>
+</head>
+<body class="has-tabs">
+<main>
+  <!-- PRACTICE -->
+  <section id="setup">
+    <div class="hello">
+      <div>
+        <h1 id="greeting">Hello</h1>
+        <p id="greetSub"></p>
+      </div>
+      <div class="flame" id="flameBadge" aria-label="Day streak">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path id="flamePath" style="fill:var(--apricot)" d="M12 2c1 3.5 5.5 5.8 5.5 11a5.5 5.5 0 0 1-11 0c0-2.3 1-4 2.4-5.3.2 1.9 1.1 3.1 2.2 3.6C10.9 8.5 11 5 12 2z"/></svg>
+        <b id="flameNum">0</b>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="week" id="week"></div>
+      <p class="week-msg" id="weekMsg"></p>
+    </div>
+
+    <div class="hero">
+      <div class="hero-top">
+        <svg width="32" height="32" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="10" fill="rgba(255,255,255,.16)"/><g fill="#fff"><rect x="8" y="13" width="3" height="8" rx="1.5"/><rect x="13.5" y="9" width="3" height="16" rx="1.5"/><rect x="19" y="11" width="3" height="12" rx="1.5"/><rect x="24.5" y="14.5" width="3" height="5" rx="1.5"/></g></svg>
+        <span class="hero-label" id="heroLabel">Today's prompt</span>
+      </div>
+      <p class="prompt" id="promptText"></p>
+      <button class="shuffle" id="shuffleBtn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+        New prompt
+      </button>
+    </div>
+
+    <h2 class="sec-title">How long?</h2>
+    <div class="lengths" id="lengthChips" role="group" aria-label="Length"></div>
+    <button class="btn-go" id="startBtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      Start speaking
+    </button>
+    <div id="errBox"></div>
+
+    <h2 class="sec-title">Pick a topic</h2>
+    <div class="chips" id="catChips"></div>
+
+    <h2 class="sec-title">Practice style</h2>
+    <div class="card">
+      <label class="switch-row"><span>No-filler challenge<small>See a live count. Aim for 2 or fewer.</small></span><input type="checkbox" class="switch" id="challenge"></label>
+      <label class="switch-row"><span>Focus mode<small>Hide all feedback and just practice talking.</small></span><input type="checkbox" class="switch" id="hideNums"></label>
+    </div>
+  </section>
+
+  <!-- PROGRESS -->
+  <section id="progress" hidden>
+    <h1 class="page-title">Your progress</h1>
+    <div class="stats">
+      <div class="stat"><i style="background:var(--brand)"></i><b class="num" id="sSessions">0</b><span>Sessions</span></div>
+      <div class="stat"><i style="background:var(--apricot)"></i><b class="num" id="sStreak">0</b><span>Day streak</span></div>
+      <div class="stat"><i style="background:#3D8FE0"></i><b class="num" id="sMinutes">0</b><span>Minutes spoken</span></div>
+    </div>
+    <h2 class="sec-title">Badges</h2>
+    <div class="card"><div class="badges" id="badges"></div></div>
+    <h2 class="sec-title">Your patterns</h2>
+    <div id="patterns"></div>
+    <h2 class="sec-title">Confidence</h2>
+    <div class="card" id="chartCard"></div>
+    <h2 class="sec-title">Recent sessions</h2>
+    <div id="recent"></div>
+    <div id="installWrap" hidden>
+      <h2 class="sec-title">Keep it on your phone</h2>
+      <div class="card">
+        <p id="installText" style="margin:0 0 12px;font-size:15px"></p>
+        <button class="btn-soft" id="installBtn" hidden>Install the app</button>
+      </div>
+    </div>
+    <p class="tiny">Recordings are never saved. Only your ratings and session stats are kept on this device.</p>
+  </section>
+
+  <!-- LIVE -->
+  <section id="live" hidden>
+    <div class="ring">
+      <div class="pulse"></div>
+      <svg viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="44"/><circle class="bar" id="bar" cx="50" cy="50" r="44"/></svg>
+      <div class="time num" id="timeText">0:30</div>
+    </div>
+    <p class="live-prompt" id="livePrompt"></p>
+    <p class="hint" id="liveHint"></p>
+    <p class="live-fillers" id="liveFillers" hidden></p>
+    <div class="transcript" id="transcript" hidden></div>
+    <button class="stop" id="stopBtn" aria-label="Finish"><span></span></button>
+    <div class="stop-label">Finish</div>
+  </section>
+
+  <!-- REVIEW -->
+  <section id="review" hidden>
+    <div class="cheer">
+      <svg width="84" height="84" viewBox="0 0 88 88" aria-hidden="true"><circle cx="44" cy="44" r="38" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="6"/><circle id="doneArc" cx="44" cy="44" r="38" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" transform="rotate(-90 44 44)" stroke-dasharray="238.8" stroke-dashoffset="238.8"/><path id="doneCheck" d="M31 45l9 9 18-19" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="40" stroke-dashoffset="40"/></svg>
+      <h2 id="reviewTitle"></h2>
+      <p class="sub" id="reviewSub"></p>
+      <div class="awards" id="awards"></div>
+      <div class="player">
+        <button class="play" id="playBtn" aria-label="Play recording"></button>
+        <div class="ptrack" id="ptrack"><div id="pfill"></div></div>
+        <span class="ptime num" id="ptime">0:00</span>
+      </div>
+      <audio id="player" preload="auto"></audio>
+    </div>
+    <div style="text-align:center"><button class="btn-soft" id="revealBtn" hidden style="margin-top:16px">Show my feedback</button></div>
+
+    <div id="metricsWrap">
+      <div id="challengeWrap" hidden>
+        <h2 class="sec-title">No-filler challenge</h2>
+        <div class="card banner" id="challengeBox"></div>
+      </div>
+
+      <h2 class="sec-title">How it went</h2>
+      <div class="tiles" id="tiles"></div>
+      <p class="note" id="transcribeNote" hidden></p>
+
+      <h2 class="sec-title">What worked</h2>
+      <ul class="list" id="workedList"></ul>
+
+      <h2 class="sec-title">What to work on</h2>
+      <ul class="list" id="improveList"></ul>
+
+      <h2 class="sec-title">Next round</h2>
+      <div class="focus">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" style="fill:none;stroke:#fff;stroke-width:2.2"/><circle cx="12" cy="12" r="5.5" style="fill:none;stroke:#fff;stroke-width:2.2"/><circle cx="12" cy="12" r="2" style="fill:#fff"/></svg>
+        <div><h3>Your one focus</h3><p id="tipText"></p></div>
+      </div>
+
+      <div id="flowSection">
+        <h2 class="sec-title">Session flow</h2>
+        <div class="card">
+          <div id="flowWrap">
+            <div class="timeline" id="timeline" role="img" aria-label="Timeline of speaking and pauses"></div>
+            <div class="legend">
+              <span><i style="background:var(--brand)"></i>Speaking</span>
+              <span><i style="background:var(--brand-mid)"></i>Pause</span>
+              <span><i style="background:var(--apricot)"></i>Gap over 2.5 sec</span>
+            </div>
+            <p class="small" id="flowNote"></p>
+          </div>
+          <p class="small" id="fillerNote"></p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="sec-title">How confident did you feel?</h2>
+    <div class="rate" id="rate"></div>
+    <div style="margin-top:24px"><button class="btn-go" id="saveBtn">Save my session</button></div>
+    <div style="text-align:center;margin-top:6px"><button class="btn-text" id="discardBtn">Skip saving</button></div>
+  </section>
+</main>
+
+<nav class="tabs" id="tabbar" aria-label="Main">
+  <button id="tabPractice" aria-current="page">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+    Practice
+  </button>
+  <button id="tabProgress">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-6M12 20V5M19 20v-10"/></svg>
+    Progress
+  </button>
+</nav>
+
+<script>
+(function(){
+  // ---------- Data ----------
+  const USER_NAME = 'Jyoti';
+  const LENGTHS = [
+    {id:'warm',  label:'30s', secs:30},
+    {id:'short', label:'1m', secs:60},
+    {id:'long',  label:'2m', secs:120},
+    {id:'talk',  label:'3m', secs:180},
+    {id:'free',  label:'Free', secs:0}
+  ];
+  const PROMPTS = {
+    'Easy start': [
+      'Describe what you did this morning, step by step.',
+      'Tell me about your favorite meal and why it matters to you.',
+      'Describe the room you are in as if to someone who cannot see it.',
+      'What is a small thing that made you smile this week?',
+      'Explain how to make a cup of tea or coffee.'
+    ],
+    'About me': [
+      'Introduce yourself in a way you would be proud of.',
+      'Talk about something you are good at and how you got there.',
+      'What is something you have learned the hard way?',
+      'Describe a moment you handled better than you expected.',
+      'What do you want people to know about how you work?'
+    ],
+    'Work talk': [
+      'Explain what you worked on this week to someone new to your team.',
+      'Give a 1-minute update as if you were in a team meeting.',
+      'Explain a tricky idea from your job using a simple example.',
+      'Share one piece of feedback you would give to a colleague, kindly.',
+      'Pitch an idea you believe in, then say why it matters.'
+    ],
+    'Presentation': [
+      'Teach a room of beginners one idea you know well. Open, explain, close.',
+      'Walk through a problem you solved: what it was, what you tried, what worked.',
+      'Give a short toast for someone you admire.',
+      'Convince a skeptical audience to try something new.',
+      'Present your case for a change you would make at work. Use three points.'
+    ],
+    'Opinions': [
+      'Pick something you think is overrated and say why.',
+      'Should everyone learn to speak in public? Take a side.',
+      'Argue for your favorite season like you are on a debate stage.',
+      'What is one rule you think should change, and what would replace it?',
+      'Recommend a book, show, or place and convince me to try it.'
+    ],
+    'Stories': [
+      'Tell the story of a time you were nervous and it turned out fine.',
+      'Tell me about a trip, real or imagined, that went wrong in a funny way.',
+      'Describe a person who changed how you think.',
+      'Tell the story of your day as a short adventure.',
+      'Describe a childhood place in vivid detail.'
+    ]
+  };
+  const TOPIC_COLORS = {
+    'Easy start':'#3BAF84', 'About me':'#3D8FE0', 'Work talk':'#5440D8',
+    'Presentation':'#E07B39', 'Opinions':'#C9508A', 'Stories':'#D9A21B'
+  };
+  const GREET_LINES = [
+    'Ready to say something out loud?', 'One minute today makes tomorrow easier.', 'Your voice is worth hearing.',
+    'Small reps, big confidence.', 'Time to warm up your voice.', 'Messy practice still counts.', 'Today is a good day to talk.'
+  ];
+  const RATINGS = [['1','Shaky'],['2','Uneasy'],['3','Okay'],['4','Steady'],['5','Strong']];
+  const SINGLE_FILLERS = ['um','uh','er','erm','like','basically','actually','literally'];
+  const DOUBLE_FILLERS = ['you know','i mean','kind of','sort of'];
+  const LIKE_OK_AFTER = ['i','we','you','they','would','do','dont',"don't",'did',"didn't",'look','looks','feel','feels','sounds','something','more','just','much','not'];
+  const CHALLENGE_GOAL = 2;
+  const GAP_SECS = 2.5;
+  const ICONS = {
+    good: '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" style="fill:#1E9E6A"/><path d="M7 12.5l3.2 3.2L17 9" style="fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"/></svg>',
+    work: '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" style="fill:#E07B39"/><path d="M12 17V7.5M7.8 11.5 12 7.3l4.2 4.2" style="fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"/></svg>',
+    trophy: '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" style="fill:#1E9E6A"/><path d="M8.5 7h7v3.2a3.5 3.5 0 0 1-7 0zM12 13.7V16M9.5 17h5" style="fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/></svg>',
+    retry: '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" style="fill:#E07B39"/><path d="M16.5 12a4.5 4.5 0 1 1-1.4-3.3M15.5 6.5v2.6h-2.6" style="fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/></svg>',
+    play: '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z" style="fill:#5440D8"/></svg>',
+    pause: '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4.5" width="4" height="15" rx="1.2" style="fill:#5440D8"/><rect x="14" y="4.5" width="4" height="15" rx="1.2" style="fill:#5440D8"/></svg>',
+    check: '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4L18 8" style="fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"/></svg>',
+    flame: '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path style="fill:#F2A65A" d="M12 2c1 3.5 5.5 5.8 5.5 11a5.5 5.5 0 0 1-11 0c0-2.3 1-4 2.4-5.3.2 1.9 1.1 3.1 2.2 3.6C10.9 8.5 11 5 12 2z"/></svg>',
+    star: '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path style="fill:#F2A65A" d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg>'
+  };
+  const BADGES = [
+    {id:'first',   name:'First session', glyph:'1',   test:(h,x)=>h.length>=1},
+    {id:'streak3', name:'3-day streak',  glyph:'3d',  test:(h,x)=>x.best>=3},
+    {id:'streak7', name:'7-day streak',  glyph:'7d',  test:(h,x)=>x.best>=7},
+    {id:'ten',     name:'10 sessions',   glyph:'10',  test:(h,x)=>h.length>=10},
+    {id:'thirty',  name:'30 minutes',    glyph:'30m', test:(h,x)=>x.mins>=30},
+    {id:'clean',   name:'Filler-free',   glyph:'0',   test:(h,x)=>h.some(s=>s.challengePassed)},
+    {id:'long',    name:'3-minute talk', glyph:'3m',  test:(h,x)=>h.some(s=>s.lenId==='talk' && s.secs>=178)},
+    {id:'explorer',name:'Every topic',   glyph:'6',   test:(h,x)=>new Set(h.map(s=>s.cat)).size>=6}
+  ];
+  const badgeIcon = (b, on) => '<svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="bg-' + b.id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2E2470"/><stop offset=".55" stop-color="#5440D8"/><stop offset="1" stop-color="#B4549B"/></linearGradient></defs>'
+    + '<circle cx="28" cy="28" r="26" style="fill:' + (on ? 'url(#bg-' + b.id + ')' : '#ECEBF3') + '"/>'
+    + '<circle cx="28" cy="28" r="21" style="fill:none;stroke:' + (on ? 'rgba(255,255,255,.3)' : '#DAD8E6') + ';stroke-width:1.2"/>'
+    + '<text x="28" y="33" text-anchor="middle" style="font-family:Plus Jakarta Sans,system-ui,sans-serif;font-size:15px;font-weight:700;letter-spacing:-.5px;fill:' + (on ? '#fff' : '#A3A1B5') + '">' + b.glyph + '</text></svg>';
+
+  // ---------- Storage (falls back to memory if blocked) ----------
+  const mem = {};
+  const store = {
+    get(k){ try{ return localStorage.getItem(k); }catch(e){ return mem[k] || null; } },
+    set(k,v){ try{ localStorage.setItem(k,v); }catch(e){ mem[k] = v; } }
+  };
+  const loadHistory = () => { try{ return JSON.parse(store.get('say-it-sessions')) || []; }catch(e){ return []; } };
+  const saveHistory = h => store.set('say-it-sessions', JSON.stringify(h));
+
+  // ---------- State ----------
+  const $ = id => document.getElementById(id);
+  let lengthId = 'short', cat = 'Easy start', prompt = '', isDaily = true;
+  let recorder, stream, chunks = [], recog, recogOn = false;
+  let audioCtx = null, analyser = null, levelBuf = null, levels = [], wordEvents = [];
+  let startedAt = 0, tickTimer = null, finalText = '', interimText = '', lastResult = null, rating = 0, audioUrl = null, challengeOn = false;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const fmt = s => { s = Math.max(0, Math.round(s)); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const avg = a => a.reduce((x,y)=>x+y,0) / a.length;
+  const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+  const currentLength = () => LENGTHS.find(l => l.id === lengthId);
+  const dayIndex = () => { const d = new Date(); d.setHours(0,0,0,0); return Math.floor(d.getTime()/864e5); };
+
+  // ---------- Navigation ----------
+  function show(view){
+    ['setup','progress','live','review'].forEach(v => $(v).hidden = (v !== view));
+    const tabbed = (view === 'setup' || view === 'progress');
+    $('tabbar').hidden = !tabbed;
+    document.body.classList.toggle('has-tabs', tabbed);
+    document.body.classList.toggle('live', view === 'live');
+    $('tabPractice').setAttribute('aria-current', view === 'setup' ? 'page' : 'false');
+    $('tabProgress').setAttribute('aria-current', view === 'progress' ? 'page' : 'false');
+    window.scrollTo({top:0});
+  }
+
+  // ---------- Practice screen ----------
+  function renderGreeting(){
+    const hr = new Date().getHours();
+    $('greeting').textContent = (hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening') + ', ' + USER_NAME;
+    $('greetSub').textContent = GREET_LINES[dayIndex() % GREET_LINES.length];
+  }
+  function renderChips(){
+    const lc = $('lengthChips'); lc.innerHTML = '';
+    LENGTHS.forEach(l => {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = l.label;
+      b.setAttribute('aria-pressed', String(l.id === lengthId));
+      b.setAttribute('aria-label', l.secs ? fmt(l.secs) + ' minutes' : 'No timer');
+      b.onclick = () => { lengthId = l.id; renderChips(); };
+      lc.appendChild(b);
+    });
+    const cc = $('catChips'); cc.innerHTML = '';
+    Object.keys(PROMPTS).forEach(c => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+      b.style.setProperty('--c', TOPIC_COLORS[c]);
+      b.innerHTML = '<i></i>' + esc(c);
+      b.setAttribute('aria-pressed', String(c === cat));
+      b.onclick = () => { cat = c; isDaily = false; pickPrompt(); renderChips(); };
+      cc.appendChild(b);
+    });
+  }
+  function dailyPrompt(){
+    const d = dayIndex(), cats = Object.keys(PROMPTS);
+    cat = cats[d % cats.length];
+    const list = PROMPTS[cat];
+    prompt = list[Math.floor(d / cats.length) % list.length];
+    isDaily = true;
+    renderPrompt();
+  }
+  function pickPrompt(){
+    const list = PROMPTS[cat];
+    let next;
+    do { next = list[Math.floor(Math.random()*list.length)]; } while(next === prompt && list.length > 1);
+    prompt = next;
+    renderPrompt();
+  }
+  function renderPrompt(){
+    $('promptText').textContent = prompt;
+    $('heroLabel').textContent = isDaily ? "Today's prompt" : cat;
+  }
+
+  // ---------- Text analysis ----------
+  function analyzeText(text){
+    const tokens = text.toLowerCase().replace(/[^a-z' ]/g,' ').split(/\s+/).filter(Boolean);
+    const found = {};
+    const add = w => { found[w] = (found[w] || 0) + 1; };
+    for(let i = 0; i < tokens.length; i++){
+      const t = tokens[i], prev = tokens[i-1] || '';
+      if(SINGLE_FILLERS.indexOf(t) > -1){
+        if(t === 'like' && LIKE_OK_AFTER.indexOf(prev) > -1) continue;
+        add(t);
+      }
+      if(i > 0 && DOUBLE_FILLERS.indexOf(prev + ' ' + t) > -1) add(prev + ' ' + t);
+    }
+    const total = Object.values(found).reduce((a,b)=>a+b,0);
+    return {words: tokens.length, found, total};
+  }
+
+  // ---------- Audio analysis (pauses, energy) ----------
+  function sampleLevel(){
+    if(!analyser) return 0;
+    analyser.getFloatTimeDomainData(levelBuf);
+    let s = 0;
+    for(let i = 0; i < levelBuf.length; i++) s += levelBuf[i]*levelBuf[i];
+    return Math.sqrt(s / levelBuf.length);
+  }
+  function analyzeAudio(samples, secs){
+    const n = samples.length;
+    if(n < 20) return null;
+    const sorted = samples.slice().sort((a,b)=>a-b);
+    const floor = sorted[Math.floor(n*0.15)];
+    const peak = sorted[Math.floor(n*0.95)];
+    const thr = Math.max(0.006, floor*2.2, peak*0.12);
+    const voiced = samples.map(v => v > thr);
+    const voicedFrac = voiced.filter(Boolean).length / n;
+    if(peak < 0.008 || voicedFrac < 0.05) return {quiet:true};
+
+    const sm = voiced.slice();
+    let i = 0;
+    while(i < n){
+      if(!sm[i]){
+        let j = i; while(j < n && !sm[j]) j++;
+        if(j - i < 3 && i > 0 && j < n){ for(let k = i; k < j; k++) sm[k] = true; }
+        i = j;
+      } else i++;
+    }
+    const first = sm.indexOf(true), last = sm.lastIndexOf(true);
+    const kind = new Array(n).fill(0);
+    const pauses = [];
+    i = first;
+    while(i <= last){
+      if(sm[i]){ kind[i] = 1; i++; }
+      else {
+        let j = i; while(j <= last && !sm[j]) j++;
+        const len = (j - i) * 0.1;
+        pauses.push(len);
+        for(let k = i; k < j; k++) kind[k] = len >= GAP_SECS ? 3 : 2;
+        i = j;
+      }
+    }
+    const pauseCount = pauses.filter(p => p >= 0.7).length;
+    const longGaps = pauses.filter(p => p >= GAP_SECS).length;
+    const longest = pauses.length ? Math.max.apply(null, pauses) : 0;
+
+    const span = last - first + 1;
+    const third = Math.max(3, Math.floor(span/3));
+    const mean = (a,b) => { let s = 0, c = 0; for(let k = a; k < b; k++){ if(sm[k]){ s += samples[k]; c++; } } return c ? s/c : 0; };
+    const e1 = mean(first, first + third), e3 = mean(last + 1 - third, last + 1);
+    const energyDrop = e1 ? Math.max(0, (e1 - e3) / e1) : 0;
+
+    return {quiet:false, voicedFrac, startDelay: first*0.1, pauseCount, longGaps, longest, energyDrop, kind};
+  }
+  function renderTimeline(kind){
+    const el = $('timeline'); el.innerHTML = '';
+    const B = 50, n = kind.length;
+    for(let b = 0; b < B; b++){
+      const a = Math.floor(b*n/B), z = Math.max(a+1, Math.floor((b+1)*n/B));
+      let c1 = 0, c2 = 0, c3 = 0, c0 = 0;
+      for(let k = a; k < z; k++){ const v = kind[k]; if(v===1) c1++; else if(v===2) c2++; else if(v===3) c3++; else c0++; }
+      const total = z - a, d = document.createElement('div');
+      if(c1/total >= 0.4) d.className = 'k1';
+      else if(c3/total >= 0.5) d.className = 'k3';
+      else if(c2 + c3 > 0 && c0/total < 0.5) d.className = 'k2';
+      el.appendChild(d);
+    }
+  }
+  function paceHalves(events, total, secs){
+    if(secs < 40 || total < 30) return null;
+    const mid = secs/2; let w1 = 0;
+    for(let i = 0; i < events.length; i++){ if(events[i].t <= mid) w1 = events[i].n; else break; }
+    w1 = Math.min(w1, total);
+    const w2 = total - w1;
+    return {r1: Math.round(w1/(mid/60)), r2: Math.round(w2/(mid/60))};
+  }
+
+  // ---------- Coaching ----------
+  function coach(r, prev){
+    const worked = [], improve = [];
+    const len = currentLength();
+    const au = r.audio && !r.audio.quiet ? r.audio : null;
+    const topFiller = r.topFiller ? '"' + r.topFiller + '"' : '';
+
+    if(len.secs && r.secs >= len.secs - 1) worked.push('You used the whole ' + fmt(len.secs) + '. Staying with your thoughts until the timer ends is a real skill.');
+    else if(!len.secs && r.secs >= 60) worked.push('You kept talking for ' + fmt(r.secs) + ' with no timer pushing you.');
+    else if(r.secs >= 20) worked.push('You started and kept going. That is the habit that builds confidence.');
+    if(r.hasText && r.wpm >= 110 && r.wpm <= 165) worked.push('Your pace, ' + r.wpm + ' words per minute, is easy for a listener to follow.');
+    if(r.hasText && r.secs >= 20 && r.fillerRate <= 3) worked.push(r.fillerTotal === 0 ? 'No filler words spotted. Clean delivery.' : 'Only ' + plural(r.fillerTotal, 'possible filler') + '. That is a clean delivery.');
+    if(au && au.pauseCount >= 2 && au.longGaps === 0) worked.push('You paused between ideas without losing the thread.');
+    if(au && au.energyDrop < 0.25 && r.secs >= 25) worked.push('Your voice held its energy right to the end.');
+    if(au && au.startDelay <= 2 && r.secs >= 20) worked.push('You started quickly, with no long wind-up.');
+    if(r.halves && Math.abs(r.halves.r1 - r.halves.r2) / Math.max(r.halves.r1, r.halves.r2) <= 0.2) worked.push('Your pace stayed steady from start to finish.');
+    if(prev && r.hasText && typeof prev.fillerRate === 'number' && r.fillerRate < prev.fillerRate - 0.5) worked.push('Fewer filler words per minute than your last session.');
+    if(r.challenge && r.challenge.passed) worked.push('You cleared the no-filler challenge.');
+
+    if(r.audio && r.audio.quiet) improve.push({text:'Very little sound was picked up, so pauses and volume could not be measured.', tip:'Hold the phone about a hand-span from your mouth and try a quieter room.'});
+    if(r.hasText && r.fillerRate >= 6) improve.push({text:'About ' + Math.round(r.fillerTotal) + ' possible fillers (roughly ' + r.fillerRate.toFixed(1) + ' a minute), mostly ' + topFiller + '.', tip:'When a filler like ' + topFiller + ' starts to come out, take a silent breath instead. A pause sounds more confident than a filler.'});
+    else if(r.hasText && r.secs >= 20 && r.fillerRate >= 3.5) improve.push({text:'A few fillers crept in, mostly ' + topFiller + '.', tip:'Try swapping ' + topFiller + ' for a short silent pause this next round.'});
+    if(r.hasText && r.wpm > 170) improve.push({text:'You spoke fast, at ' + r.wpm + ' words per minute. Speed often rises when nervous.', tip:'Breathe out fully at the end of each sentence. Aim for about 140 words per minute.'});
+    if(r.hasText && r.wpm > 0 && r.wpm < 95 && r.secs >= 20) improve.push({text:'Your pace was slow, at ' + r.wpm + ' words per minute.', tip:'Use shorter sentences. If you are searching for words, say a simple bridge like "Here is the main point."'});
+    if(au && au.longGaps >= 1) improve.push({text:plural(au.longGaps, 'long silent gap') + ' over ' + GAP_SECS + ' seconds. The longest was ' + au.longest.toFixed(1) + ' seconds.', tip:'Keep a go-to phrase ready, like "Let me put it another way," so a blank moment becomes a smooth turn.'});
+    if(au && au.energyDrop >= 0.35 && r.secs >= 25) improve.push({text:'Your voice got quieter toward the end.', tip:'Decide your last sentence before you start, and say it as strongly as your first.'});
+    if(r.halves && r.halves.r1 > r.halves.r2 * 1.25) improve.push({text:'You started fast and slowed down, from ' + r.halves.r1 + ' to ' + r.halves.r2 + ' words per minute.', tip:'Start a little slower than feels natural. Nerves usually push the first sentences.'});
+    if(r.halves && r.halves.r2 > r.halves.r1 * 1.25) improve.push({text:'You sped up as you went, from ' + r.halves.r1 + ' to ' + r.halves.r2 + ' words per minute.', tip:'Slow down for your last point. That is the one people remember.'});
+    if(au && au.pauseCount === 0 && r.secs >= 40) improve.push({text:'You barely paused. Listeners need small breaks to absorb your points.', tip:'Pause for one beat after each main idea.'});
+    if(au && au.startDelay >= 4) improve.push({text:'It took ' + Math.round(au.startDelay) + ' seconds to start.', tip:'Prepare your first sentence so you can begin on the first breath.'});
+    if(len.secs && r.secs < len.secs * 0.6 && r.secs >= 5) improve.push({text:'You stopped with plenty of time left (' + fmt(r.secs) + ' of ' + fmt(len.secs) + ').', tip:'Add an example. Try starting a sentence with "For instance" to stretch an idea.'});
+    if(r.challenge && !r.challenge.passed && r.hasText) improve.push({text:'The challenge allows ' + CHALLENGE_GOAL + ' fillers or fewer. You had ' + r.fillerTotal + '.', tip:'Go again with the same prompt. The second try is usually cleaner.'});
+
+    const shown = improve.slice(0, 3);
+    const tip = shown.length ? shown[0].tip : 'Nothing major to fix. Raise the challenge: pick a longer length or a harder topic.';
+    return {worked: worked.slice(0, 3), improve: shown.map(x => x.text), tip};
+  }
+
+  // ---------- Recording ----------
+  async function start(){
+    $('errBox').innerHTML = '';
+    try{
+      stream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:false, autoGainControl:false}});
+    }catch(e){
+      $('errBox').innerHTML = '<div class="error">The microphone is not available. Allow microphone access for this page in your browser settings, then try again.</div>';
+      return;
+    }
+    chunks = []; finalText = ''; interimText = ''; levels = []; wordEvents = [];
+    challengeOn = $('challenge').checked && !$('hideNums').checked;
+
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AC();
+      if(audioCtx.resume) audioCtx.resume();
+      const src = audioCtx.createMediaStreamSource(stream);
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 1024;
+      levelBuf = new Float32Array(analyser.fftSize);
+      src.connect(analyser);
+    }catch(e){ analyser = null; }
+
+    recorder = new MediaRecorder(stream);
+    recorder.ondataavailable = e => { if(e.data && e.data.size) chunks.push(e.data); };
+    recorder.onstop = onRecorded;
+    recorder.start();
+    startRecognition();
+
+    const len = currentLength();
+    const circ = 2*Math.PI*44;
+    $('livePrompt').textContent = prompt;
+    $('transcript').hidden = true;
+    $('bar').style.strokeDasharray = circ;
+    $('bar').style.strokeDashoffset = len.secs ? 0 : circ;
+    $('timeText').textContent = len.secs ? fmt(len.secs) : '0:00';
+    $('liveHint').textContent = len.secs ? 'Keep going, even if it comes out messy. Messy counts.' : 'Talk as long as you like. Tap Finish when you are done.';
+    $('liveFillers').hidden = !challengeOn;
+    $('liveFillers').textContent = 'Fillers: 0 of ' + CHALLENGE_GOAL + ' allowed';
+    show('live');
+    startedAt = performance.now();
+    tickTimer = setInterval(tick, 100);
+  }
+  function tick(){
+    const el = (performance.now() - startedAt)/1000;
+    levels.push(sampleLevel());
+    const len = currentLength();
+    if(len.secs){
+      const left = len.secs - el;
+      $('timeText').textContent = fmt(Math.ceil(left));
+      $('bar').style.strokeDashoffset = (2*Math.PI*44) * Math.min(1, el/len.secs);
+      if(left <= 0) finish();
+    } else {
+      $('timeText').textContent = fmt(el);
+    }
+  }
+  function startRecognition(){
+    if(!SR) return;
+    try{
+      recog = new SR();
+      recog.continuous = true; recog.interimResults = true; recog.lang = 'en-US';
+      recog.onresult = e => {
+        interimText = '';
+        for(let i = e.resultIndex; i < e.results.length; i++){
+          const t = e.results[i][0].transcript;
+          if(e.results[i].isFinal) finalText += ' ' + t; else interimText += t;
+        }
+        const full = (finalText + ' ' + interimText).trim();
+        const a = analyzeText(full);
+        wordEvents.push({t:(performance.now() - startedAt)/1000, n:a.words});
+        if(!$('hideNums').checked){
+          const box = $('transcript');
+          box.hidden = false;
+          box.textContent = full;
+          box.scrollTop = box.scrollHeight;
+        }
+        if(challengeOn) $('liveFillers').textContent = 'Fillers: ' + a.total + ' of ' + CHALLENGE_GOAL + ' allowed';
+      };
+      recog.onend = () => { if(recogOn){ try{ recog.start(); }catch(e){} } };
+      recog.onerror = () => {};
+      recogOn = true;
+      recog.start();
+    }catch(e){ recogOn = false; }
+  }
+  function finish(){
+    if(!recorder || recorder.state === 'inactive') return;
+    clearInterval(tickTimer);
+    const secs = (performance.now() - startedAt)/1000;
+    lastResult = {secs};
+    recogOn = false;
+    try{ recog && recog.stop(); }catch(e){}
+    recorder.stop();
+    stream.getTracks().forEach(t => t.stop());
+    try{ audioCtx && audioCtx.close(); }catch(e){}
+    analyser = null;
+  }
+
+  // ---------- Player ----------
+  const audioEl = $('player');
+  function playerDuration(){ const d = audioEl.duration; return (isFinite(d) && d > 0) ? d : (lastResult ? lastResult.secs : 0); }
+  function updatePlayer(){
+    const d = playerDuration(), t = audioEl.currentTime || 0;
+    $('pfill').style.width = d ? Math.min(100, t/d*100) + '%' : '0';
+    $('ptime').textContent = fmt(audioEl.paused && t === 0 ? d : t);
+    $('playBtn').innerHTML = audioEl.paused ? ICONS.play : ICONS.pause;
+    $('playBtn').setAttribute('aria-label', audioEl.paused ? 'Play recording' : 'Pause recording');
+  }
+  $('playBtn').onclick = () => { if(audioEl.paused) audioEl.play().catch(()=>{}); else audioEl.pause(); };
+  $('ptrack').onclick = e => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const d = playerDuration();
+    if(d) { try{ audioEl.currentTime = Math.max(0, Math.min(d, (e.clientX - r.left)/r.width * d)); }catch(err){} }
+  };
+  ['timeupdate','play','pause','ended','loadedmetadata'].forEach(ev => audioEl.addEventListener(ev, updatePlayer));
+  audioEl.addEventListener('ended', () => { audioEl.currentTime = 0; updatePlayer(); });
+
+  // ---------- Completion ring ----------
+  function animateRing(){
+    const arc = $('doneArc'), chk = $('doneCheck');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    arc.style.transition = chk.style.transition = 'none';
+    arc.style.strokeDashoffset = 238.8; chk.style.strokeDashoffset = 40;
+    void arc.getBoundingClientRect();
+    arc.style.transition = chk.style.transition = '';
+    if(reduce){ arc.style.transition = chk.style.transition = 'none'; }
+    requestAnimationFrame(() => { arc.style.strokeDashoffset = 0; chk.style.strokeDashoffset = 0; });
+  }
+
+  // ---------- Review ----------
+  function rows(ul, items, empty, icon){
+    ul.innerHTML = '';
+    (items.length ? items : [empty]).forEach(t => {
+      const li = document.createElement('li');
+      li.innerHTML = ICONS[icon] + '<span></span>';
+      li.lastChild.textContent = t;
+      ul.appendChild(li);
+    });
+  }
+  function tile(label, value, unit, status, text){
+    return '<div class="tile"><span class="t-label">' + label + '</span><span class="t-val num">' + value + '</span><span class="t-unit">' + unit + '</span><br><span class="pill ' + status + '">' + esc(text) + '</span></div>';
+  }
+  function buildTiles(r){
+    const au = r.audio && !r.audio.quiet ? r.audio : null;
+    const out = [];
+    if(r.hasText && r.wpm){
+      let st = 'good', p = 'Just right';
+      if(r.wpm > 175){ st = 'work'; p = 'Fast'; }
+      else if(r.wpm > 165){ st = 'okay'; p = 'A bit fast'; }
+      else if(r.wpm < 95){ st = 'work'; p = 'Slow'; }
+      else if(r.wpm < 110){ st = 'okay'; p = 'A bit slow'; }
+      out.push({html: tile('Pace', r.wpm, 'words per minute', st, p), st});
+    } else out.push({html: tile('Pace', '–', 'words per minute', 'none', 'Not measured'), st:'none'});
+    if(r.hasText){
+      let st = 'good', p = 'Clean';
+      if(r.fillerRate >= 6){ st = 'work'; p = 'Many'; }
+      else if(r.fillerRate > 3){ st = 'okay'; p = 'A few'; }
+      out.push({html: tile('Filler words', r.fillerTotal, 'possible fillers', st, p), st});
+    } else out.push({html: tile('Filler words', '–', 'possible fillers', 'none', 'Not measured'), st:'none'});
+    if(au){
+      let st = 'okay', p = 'Few pauses';
+      if(au.longGaps > 0){ st = 'work'; p = plural(au.longGaps, 'long gap'); }
+      else if(au.pauseCount >= 2){ st = 'good'; p = 'Good rhythm'; }
+      else if(au.pauseCount === 0 && r.secs >= 40){ st = 'work'; p = 'No pauses'; }
+      out.push({html: tile('Pauses', au.pauseCount, 'natural pauses', st, p), st});
+    } else out.push({html: tile('Pauses', '–', 'natural pauses', 'none', 'Not measured'), st:'none'});
+    if(au){
+      const held = Math.round((1 - au.energyDrop) * 100);
+      let st = 'good', p = 'Strong finish';
+      if(held < 65){ st = 'work'; p = 'Fades at the end'; }
+      else if(held < 75){ st = 'okay'; p = 'Slight dip'; }
+      out.push({html: tile('Voice energy', held + '%', 'held to the end', st, p), st});
+    } else out.push({html: tile('Voice energy', '–', 'held to the end', 'none', 'Not measured'), st:'none'});
+    return out;
+  }
+  function onRecorded(){
+    const blob = new Blob(chunks, {type: (recorder && recorder.mimeType) || 'audio/webm'});
+    if(audioUrl) URL.revokeObjectURL(audioUrl);
+    audioUrl = URL.createObjectURL(blob);
+    audioEl.src = audioUrl;
+
+    const secs = lastResult.secs;
+    const focus = $('hideNums').checked;
+    const text = (finalText + ' ' + interimText).trim();
+    const a = analyzeText(text);
+    const hasText = !!SR && a.words > 0;
+    const wpm = hasText && secs > 5 ? Math.round(a.words / (secs/60)) : 0;
+    const fillerRate = secs > 0 ? a.total / (secs/60) : 0;
+    const entries = Object.entries(a.found).sort((x,y)=>y[1]-x[1]);
+    const audio = analyzeAudio(levels, secs);
+    const halves = hasText ? paceHalves(wordEvents, a.words, secs) : null;
+
+    lastResult = {
+      secs, words:a.words, wpm, hasText, fillerTotal:a.total, fillerRate,
+      topFiller: entries.length ? entries[0][0] : '', audio, halves,
+      challenge: challengeOn ? {passed: a.total <= CHALLENGE_GOAL} : null
+    };
+    updatePlayer();
+
+    const h = loadHistory();
+    const prev = h.length ? h[h.length-1] : null;
+    const c = coach(lastResult, prev);
+    const tiles = buildTiles(lastResult);
+    const measured = tiles.filter(t => t.st !== 'none').length;
+    const strong = tiles.filter(t => t.st === 'good').length;
+
+    // Celebration: streak and badges this session would earn once saved
+    const preview = h.concat([{t:Date.now(), secs:Math.round(secs), cat, lenId:lengthId, challengePassed: !!(lastResult.challenge && lastResult.challenge.passed)}]);
+    const stNow = streak(h), stNext = streak(preview);
+    const before = earnedBadges(h), after = earnedBadges(preview);
+    const fresh = BADGES.filter(b => after.has(b.id) && !before.has(b.id));
+    let aw = '';
+    if(stNext > stNow) aw += '<span class="award">' + ICONS.flame + (stNext === 1 ? 'Streak started' : stNext + '-day streak') + '</span>';
+    else if(stNext > 0) aw += '<span class="award">' + ICONS.flame + stNext + '-day streak</span>';
+    fresh.forEach(b => { aw += '<span class="award">' + ICONS.star + 'New badge: ' + esc(b.name) + '</span>'; });
+    $('awards').innerHTML = aw;
+    $('awards').hidden = !aw;
+
+    const titles = ['Session complete', 'Well spoken', 'Nicely done', 'Another rep in the bank', 'Good work today'];
+    $('reviewTitle').textContent = secs < 8 ? 'Short and sweet' : titles[Math.floor(Math.random()*titles.length)];
+    $('reviewSub').textContent = fmt(secs) + ' spoken out loud' + (focus || !measured ? '.' : (strong ? '. ' + strong + ' of ' + measured + ' areas looked strong.' : '. Every round builds the skill.'));
+    $('metricsWrap').hidden = focus;
+    $('revealBtn').hidden = !focus;
+
+    $('tiles').innerHTML = tiles.map(t => t.html).join('');
+
+    const showChallenge = !!(lastResult.challenge && hasText);
+    $('challengeWrap').hidden = !showChallenge;
+    if(showChallenge){
+      const ok = lastResult.challenge.passed;
+      $('challengeBox').innerHTML = (ok ? ICONS.trophy : ICONS.retry) + '<span></span>';
+      $('challengeBox').lastChild.textContent = ok
+        ? 'Cleared, with ' + plural(a.total, 'filler word') + '.'
+        : 'Not this time: ' + plural(a.total, 'filler word') + '. Try the same prompt again.';
+    }
+
+    const tn = $('transcribeNote');
+    if(!SR){ tn.hidden = false; tn.textContent = 'This browser cannot turn speech into text, so pace and fillers are unavailable. Pauses and voice energy still work.'; }
+    else if(!hasText){ tn.hidden = false; tn.textContent = 'No words were transcribed, so pace and fillers are unavailable. Pauses and voice energy still work. Some phones cannot transcribe and record at the same time.'; }
+    else tn.hidden = true;
+
+    const auOk = audio && !audio.quiet;
+    $('flowWrap').hidden = !auOk;
+    if(auOk){
+      renderTimeline(audio.kind);
+      const bits = [];
+      bits.push('You were speaking about ' + Math.round(audio.voicedFrac*100) + '% of the time.');
+      bits.push(audio.pauseCount ? 'You took ' + plural(audio.pauseCount, 'pause') + ' of 0.7 seconds or more.' : 'You took no real pauses.');
+      if(halves) bits.push('Pace was ' + halves.r1 + ' words per minute in the first half and ' + halves.r2 + ' in the second.');
+      $('flowNote').textContent = bits.join(' ');
+    }
+    $('fillerNote').textContent = entries.length
+      ? 'Possible filler words: ' + entries.map(e => e[0] + ' (' + e[1] + ')').join(', ') + '. Some, like "like", can be natural. A silent pause often works better.'
+      : '';
+    $('flowSection').hidden = !(auOk || entries.length);
+
+    rows($('workedList'), c.worked, 'You showed up and spoke. Come back for another round to find more strengths.', 'good');
+    rows($('improveList'), c.improve, 'Nothing stands out. Try a longer length or a harder topic.', 'work');
+    $('tipText').textContent = c.tip;
+
+    rating = 0; renderRating();
+    show('review');
+    animateRing();
+  }
+  function renderRating(){
+    const el = $('rate'); el.innerHTML = '';
+    RATINGS.forEach(([n,label]) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.innerHTML = '<b>' + n + '</b>' + label;
+      b.setAttribute('aria-pressed', String(rating === Number(n)));
+      b.onclick = () => { rating = Number(n); renderRating(); };
+      el.appendChild(b);
+    });
+  }
+  function save(){
+    const r = lastResult, au = r.audio && !r.audio.quiet ? r.audio : null;
+    const entry = {
+      t: Date.now(), secs: Math.round(r.secs), prompt, cat, lenId: lengthId,
+      words: r.words || 0, wpm: r.wpm || 0, rating: rating || 0
+    };
+    if(r.hasText) entry.fillerRate = Math.round(r.fillerRate*10)/10;
+    if(au){ entry.longGaps = au.longGaps; entry.pauseCount = au.pauseCount; entry.energyDrop = Math.round(au.energyDrop*100)/100; }
+    if(r.halves){ entry.r1 = r.halves.r1; entry.r2 = r.halves.r2; }
+    if(r.challenge) entry.challengePassed = r.challenge.passed;
+    const h = loadHistory(); h.push(entry); saveHistory(h);
+    again();
+  }
+  function again(){
+    audioEl.pause();
+    isDaily = false;
+    pickPrompt();
+    renderHome();
+    renderHistory();
+    show('setup');
+  }
+
+  // ---------- Streaks, week, badges ----------
+  const dayKey = t => { const d = new Date(t); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); };
+  function streak(h){
+    const days = new Set(h.map(s => dayKey(s.t)));
+    let count = 0, d = new Date();
+    if(!days.has(dayKey(d))) d.setDate(d.getDate()-1);
+    while(days.has(dayKey(d))){ count++; d.setDate(d.getDate()-1); }
+    return count;
+  }
+  function bestStreak(h){
+    const days = Array.from(new Set(h.map(s => { const d = new Date(s.t); d.setHours(0,0,0,0); return d.getTime(); }))).sort((a,b)=>a-b);
+    let best = 0, run = 0, prev = null;
+    days.forEach(t => { run = (prev !== null && Math.round((t - prev)/864e5) === 1) ? run + 1 : 1; best = Math.max(best, run); prev = t; });
+    return best;
+  }
+  function earnedBadges(h){
+    const x = {best: bestStreak(h), mins: h.reduce((a,s)=>a+(s.secs||0),0)/60};
+    return new Set(BADGES.filter(b => b.test(h, x)).map(b => b.id));
+  }
+  function renderHome(){
+    renderGreeting();
+    const h = loadHistory();
+    const days = new Set(h.map(s => dayKey(s.t)));
+    const st = streak(h);
+    $('flameNum').textContent = st;
+    $('flameBadge').classList.toggle('off', st === 0);
+    $('flamePath').style.fill = st ? 'var(--apricot)' : '#C9C7D6';
+
+    const today = new Date(); today.setHours(0,0,0,0);
+    const monday = new Date(today); monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    const names = ['M','T','W','T','F','S','S'];
+    let html = '';
+    for(let i = 0; i < 7; i++){
+      const d = new Date(monday); d.setDate(monday.getDate() + i);
+      const done = days.has(dayKey(d)), isToday = d.getTime() === today.getTime();
+      html += '<div><span>' + names[i] + '</span><div class="day' + (done ? ' done' : '') + (isToday ? ' today' : '') + '">' + (done ? ICONS.check : '') + '</div></div>';
+    }
+    $('week').innerHTML = html;
+    const doneToday = days.has(dayKey(today));
+    $('weekMsg').innerHTML = doneToday
+      ? '<b>Done for today.</b> Come back tomorrow to make it ' + (st + 1) + ' days in a row.'
+      : st > 0 ? '<b>Practice today</b> to keep your ' + st + '-day streak going.'
+      : '<b>One session today</b> starts a new streak.';
+  }
+
+  // ---------- Progress ----------
+  function patterns(h){
+    const good = [], work = [];
+    const byCat = {};
+    h.filter(s => s.rating).forEach(s => { (byCat[s.cat] = byCat[s.cat] || []).push(s.rating); });
+    const cats = Object.keys(byCat).filter(c => byCat[c].length >= 2).map(c => [c, avg(byCat[c])]).sort((a,b) => b[1]-a[1]);
+    if(cats.length >= 2){
+      const best = cats[0], low = cats[cats.length-1];
+      if(best[1] - low[1] >= 0.5){
+        good.push(best[0] + ' prompts feel easiest, at ' + best[1].toFixed(1) + ' out of 5.');
+        work.push(low[0] + ' prompts feel hardest, at ' + low[1].toFixed(1) + ' out of 5. Try them in 30-second rounds.');
+      }
+    }
+    const fr = h.filter(s => typeof s.fillerRate === 'number' && s.words > 0);
+    if(fr.length >= 4){
+      const half = Math.floor(fr.length/2);
+      const early = avg(fr.slice(0, half).map(s => s.fillerRate)), recent = avg(fr.slice(-half).map(s => s.fillerRate));
+      if(recent < early - 0.8) good.push('Filler words are dropping, from about ' + early.toFixed(1) + ' a minute to ' + recent.toFixed(1) + '.');
+      else if(recent > early + 0.8) work.push('Filler words are rising, from about ' + early.toFixed(1) + ' a minute to ' + recent.toFixed(1) + '. Slow down and let pauses do the work.');
+      else if(recent >= 5) work.push('Fillers are steady at about ' + recent.toFixed(1) + ' a minute. Swap each one for a silent pause.');
+    } else if(fr.length >= 3){
+      const r = avg(fr.map(s => s.fillerRate));
+      if(r >= 5) work.push('You average about ' + r.toFixed(1) + ' filler words a minute. Swap each one for a silent pause.');
+      else if(r <= 2.5) good.push('You average only about ' + r.toFixed(1) + ' filler words a minute.');
+    }
+    const wp = h.filter(s => s.wpm > 0).slice(-8);
+    if(wp.length >= 3){
+      const p = Math.round(avg(wp.map(s => s.wpm)));
+      if(p > 170) work.push('Your usual pace is about ' + p + ' words per minute, on the fast side. Breathe between sentences.');
+      else if(p < 95) work.push('Your usual pace is about ' + p + ' words per minute, on the slow side. Shorter sentences help.');
+      else good.push('Your usual pace, about ' + p + ' words per minute, is easy to listen to.');
+    }
+    const en = h.slice(-5).filter(s => typeof s.energyDrop === 'number');
+    if(en.length >= 3){
+      const fades = en.filter(s => s.energyDrop >= 0.35).length;
+      if(fades >= Math.ceil(en.length/2)) work.push('Your voice fades toward the end in ' + fades + ' of your last ' + en.length + ' sessions. Plan a strong last sentence.');
+    }
+    const gp = h.slice(-5).filter(s => typeof s.longGaps === 'number');
+    if(gp.length >= 3){
+      const g = gp.filter(s => s.longGaps > 0).length;
+      if(g >= Math.ceil(gp.length/2)) work.push('Long silent gaps showed up in ' + g + ' of your last ' + gp.length + ' sessions. A bridge phrase like "Let me put it another way" fills them.');
+      else if(g === 0) good.push('No long silent gaps in your last ' + gp.length + ' sessions.');
+    }
+    const week = new Set(h.filter(s => Date.now() - s.t < 7*864e5).map(s => dayKey(s.t))).size;
+    if(week >= 3) good.push('You practiced on ' + week + ' different days this past week.');
+    return {good, work};
+  }
+  function listHTML(items, icon){
+    return items.map(i => '<li>' + ICONS[icon] + '<span>' + esc(i) + '</span></li>').join('');
+  }
+  function renderHistory(){
+    const h = loadHistory();
+    $('sSessions').textContent = h.length;
+    $('sStreak').textContent = streak(h);
+    $('sMinutes').textContent = Math.round(h.reduce((a,s)=>a+s.secs,0)/60);
+
+    const earned = earnedBadges(h);
+    $('badges').innerHTML = BADGES.map(b => '<div class="badge' + (earned.has(b.id) ? '' : ' locked') + '">' + badgeIcon(b, earned.has(b.id)) + esc(b.name) + '</div>').join('');
+
+    const pEl = $('patterns');
+    if(h.length < 3){
+      pEl.innerHTML = '<div class="card"><p class="empty-msg">After 3 sessions, this shows what is working and where the gaps are.</p></div>';
+    } else {
+      const p = patterns(h);
+      const inner = listHTML(p.good, 'good') + listHTML(p.work, 'work');
+      pEl.innerHTML = inner ? '<ul class="list">' + inner + '</ul>' : '<div class="card"><p class="empty-msg">No clear pattern yet. A few more sessions will sharpen it.</p></div>';
+    }
+
+    const chart = $('chartCard');
+    const rated = h.filter(s => s.rating).slice(-10);
+    if(!rated.length){
+      chart.innerHTML = '<p class="empty-msg">Rate how confident you felt after each session to see your trend here.</p>';
+    } else {
+      const shades = ['#CFC9F2','#AFA5EE','#8E80E6','#705FDF','#5440D8'];
+      let html = '<div class="bars" role="img" aria-label="Confidence ratings for your last sessions">';
+      for(let i = 0; i < 10 - rated.length; i++) html += '<div class="empty" style="height:6px"></div>';
+      rated.forEach(s => { html += '<div style="height:' + (s.rating/5*100) + '%;background:' + shades[s.rating-1] + '" title="' + RATINGS[s.rating-1][1] + '"></div>'; });
+      html += '</div>';
+      let msg = 'Your last ' + plural(rated.length, 'rated session') + ', on a scale of 1 to 5.';
+      if(rated.length >= 4){
+        const half = Math.floor(rated.length/2);
+        const diff = avg(rated.slice(-half).map(s=>s.rating)) - avg(rated.slice(0,half).map(s=>s.rating));
+        msg = diff > 0.2 ? 'Recent sessions feel more confident than earlier ones.' : diff < -0.2 ? 'Recent sessions felt harder. That is normal when you push into tougher prompts.' : 'Steady so far. Showing up matters more than any single session.';
+      }
+      chart.innerHTML = html + '<p class="empty-msg">' + msg + '</p>';
+    }
+
+    const rec = $('recent');
+    if(!h.length){
+      rec.innerHTML = '<div class="card"><p class="empty-msg">Nothing here yet. A 30-second warm-up is enough to begin.</p></div>';
+    } else {
+      rec.innerHTML = '<ul class="list recent">' + h.slice(-6).reverse().map(s => {
+        const d = new Date(s.t).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+        return '<li><span class="r-text">' + esc(s.prompt) + '</span><span class="r-meta">' + d + ', ' + fmt(s.secs) + '</span></li>';
+      }).join('') + '</ul>';
+    }
+  }
+
+  // ---------- Install on phone ----------
+  let deferredInstall = null;
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  const isWeb = location.protocol === 'http:' || location.protocol === 'https:';
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault(); deferredInstall = e;
+    $('installText').textContent = 'Install the app so it opens from your home screen like any other app.';
+    $('installBtn').hidden = false;
+    $('installWrap').hidden = false;
+  });
+  window.addEventListener('appinstalled', () => { $('installWrap').hidden = true; });
+  $('installBtn').onclick = async () => {
+    if(!deferredInstall) return;
+    deferredInstall.prompt();
+    await deferredInstall.userChoice;
+    deferredInstall = null;
+    $('installWrap').hidden = true;
+  };
+  if(isWeb && !standalone && /iphone|ipad|ipod/i.test(navigator.userAgent)){
+    $('installText').textContent = 'To add this to your Home Screen, tap Share in Safari, then Add to Home Screen.';
+    $('installWrap').hidden = false;
+  }
+  if('serviceWorker' in navigator && isWeb){
+    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+  }
+
+  // ---------- Wire up ----------
+  $('startBtn').onclick = start;
+  $('shuffleBtn').onclick = () => { isDaily = false; pickPrompt(); };
+  $('stopBtn').onclick = finish;
+  $('saveBtn').onclick = save;
+  $('discardBtn').onclick = again;
+  $('revealBtn').onclick = () => { $('metricsWrap').hidden = false; $('revealBtn').hidden = true; };
+  $('tabPractice').onclick = () => { renderHome(); show('setup'); };
+  $('tabProgress').onclick = () => { renderHistory(); show('progress'); };
+  $('hideNums').checked = store.get('say-it-focus') === '1';
+  $('hideNums').onchange = e => store.set('say-it-focus', e.target.checked ? '1' : '0');
+  $('challenge').checked = store.get('say-it-challenge') === '1';
+  $('challenge').onchange = e => store.set('say-it-challenge', e.target.checked ? '1' : '0');
+
+  dailyPrompt(); renderChips(); renderHome(); renderHistory(); updatePlayer(); show('setup');
+})();
+</script>
+</body>
+</html>
